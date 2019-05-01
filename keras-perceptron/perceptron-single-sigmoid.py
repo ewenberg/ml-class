@@ -1,7 +1,6 @@
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense, Flatten
-from keras.utils import to_categorical
 
 import wandb
 from wandb.keras import WandbCallback
@@ -12,25 +11,25 @@ config = run.config
 
 # load data
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
+
+is_five_train = y_train == 5
+is_five_test = y_test == 5
+labels = ["Not Five", "Is Five"]
+
 img_width = X_train.shape[1]
 img_height = X_train.shape[2]
 
-# one hot encode outputs
-y_train = to_categorical(y_train)
-# y_train should now be (60000,10), the 10 being the one hot vector
-y_test = to_categorical(y_test)
-labels = range(10)
-
-num_classes = y_train.shape[1]
-
 # create model
 model = Sequential()
+# Flatten is a layer that has no weights, just does reformattting the data
 model.add(Flatten(input_shape=(img_width, img_height)))
-model.add(Dense(num_classes, activation='sigmoid'))
+# creates a single perceptron, which is a weight for every term plus a bias term
+# Dense(2) would output two numbers, i.e. 2 perceptrons
+model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='mse', optimizer='adam',
               metrics=['accuracy'])
 
 # Fit the model
-model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test),
+model.fit(X_train, is_five_train, epochs=6, validation_data=(X_test, is_five_test),
           callbacks=[WandbCallback(data_type="image", labels=labels, save_model=False)])
-model.save('model.h5')
+model.save('perceptron.h5')

@@ -12,6 +12,7 @@ run = wandb.init()
 config = run.config
 config.optimizer = "adam"
 config.epochs = 50
+# dropout is usually between 25 and 50%
 config.dropout = 0.4
 config.hidden_nodes = 100
 
