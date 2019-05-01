@@ -21,7 +21,10 @@ img_height = X_train.shape[2]
 
 # create model
 model = Sequential()
+# Flatten is a layer that has no weights, just does reformattting the data
 model.add(Flatten(input_shape=(img_width, img_height)))
+# creates a single perceptron, which is a weight for every term plus a bias term
+# Dense(2) would output two numbers, i.e. 2 perceptrons
 model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam',
               metrics=['accuracy'])
